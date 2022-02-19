@@ -2,8 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import kuda from "./images/kuda.jpg";
-import barter from "./images/barter.jpg";
+// import kuda from "./images/kuda.jpg";
+// import barter from "./images/barter.jpg";
+// import carbon from "./images/carbon.png";
+import { bankDBs } from "./bankDBs";
+import Bank from "./Bank";
 
 //rules set 1
 /*
@@ -254,7 +257,7 @@ const Section = () => {
 	);
 };
 
-// external stylesheet
+// internal stylesheet
 const logoSize = {
 	backgroundColor: "green",
 	height: "50%",
@@ -330,7 +333,7 @@ const Section = () => {
 	);
 };
 
-// external stylesheet
+// internal stylesheet
 const logoSize = {
 	backgroundColor: "green",
 	height: "50%",
@@ -338,30 +341,46 @@ const logoSize = {
 };
 */
 
-//7. here we want to separate the props object for the individual item, then try accessing them.
+//7. here we want to separate the props object for the individual item, then try accessing them. we will start by creating an object of the bank details.
+/*
+const bankObj = {
+	branch: "ikeja",
+	streetNum: 30,
+};
+
+const bankObj2 = {
+	branch: "mile 12",
+	streetNum: 28,
+};
 const bankName = "Kuda Bank";
 const paraDesign = "Fintech";
 const BankTab = () => {
+	// from the object, we are want to get the branch, branch2 and streetNum. when you pass props, be sure to be looking for them in the components where you need to use them.
 	return (
+		// we have what is called children props, which is anything that we render between the opening and closing tag of a component as seen with the second bank component. it doesn't work in a self-closing tag. to access it, we add 'children' to the component where we need it as part of the props, then pass in a tag. this has to be called 'children', nothing else.
 		<>
 			<Navbar />
-			<Bank area="ikeja" />
-			<Bank branch="mile 12" streetNum={30} />
+			<Bank branch={bankObj.branch} streetNum={bankObj.streetNum} />
+			<Bank branch={bankObj2.branch} streetNum={bankObj2.streetNum}>
+				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eveniet,
+				molestiae.
+			</Bank>
 			<Bank />
 		</>
 	);
 };
 
-// here we will pass a parameter into the Bank function called props. you can call it any name you want(but it is wise to follow convention). we will first log it to the console to see what it means. it returns an object. we pass the props in the component where we are rendering the other components of the app(in this case bankTab). to access them(i.e. to display them in our browser), we call it as a method on the props object()
-const Bank = (props) => {
-	console.log(props);
+const Bank = ({ branch, branch2, streetNum, children }) => {
+	// to avoid repitition(of props.), we could destructure the properties from the object
+	// const { branch, branch2, streetNum, children } = props;
+	// you can destructure where you are passing the props as a parameter. Instead of props, we will pass in branch, branch2, streetNum
 	return (
 		<>
 			<Section />
-			{console.log(props)}
-			<p>{props.area}</p>
-			<p>{props.branch}</p>
-			<p>{props.streetNum}</p>
+			<p>{branch}</p>
+			<p>{branch2}</p>
+			<p>{streetNum}</p>
+			<p>{children}</p>
 		</>
 	);
 };
@@ -404,11 +423,314 @@ const Section = () => {
 	);
 };
 
-// external stylesheet
+// internal stylesheet
 const logoSize = {
 	backgroundColor: "green",
 	height: "50%",
 	width: "50%",
+};
+*/
+
+//8. The previous example is not pratical as we need to create an object everytime we want to pass a prop. here we want to iterate over an array of objects(bankDBs), then try accessing them. we access them by wrapping them in our html using map method.
+
+/*
+const bankDBs = [
+	{
+		image: kuda,
+		bankName: "kuda",
+		branch: "ikeja",
+		streetNum: 30,
+	},
+
+	{
+		image: barter,
+		bankName: "barter",
+		branch: "mile 12",
+		streetNum: 28,
+	},
+
+	{
+		image: carbon,
+		bankName: "carbon",
+		branch: "mile 12",
+		streetNum: 28,
+	},
+];
+
+const paraDesign = "Fintech";
+const BankTab = () => {
+	return (
+		//we want to iterate over the array of objects (bankDBs)
+		<>
+			<Navbar />
+			<section>
+				{bankDBs.map((bankDB) => {
+					// const { image, bankName, branch, streetNum } = bankDB;
+					//instead of returning:
+					// <img src={image} alt="bank image" />
+					// <p>{bankName}</p>
+					// <p>{branch}</p>
+					// <p>{streetNum}</p>
+					//we will return the bank component instead. instead of passing the content of the array one at a time, we will destructure
+					return (
+						<div>
+							<Bank bankDB={bankDB}></Bank>
+							<Section />
+						</div>
+					);
+				})}
+			</section>
+		</>
+	);
+};
+
+const Bank = (props) => {
+	const { image, bankName, branch, streetNum } = props.bankDB;
+	return (
+		<>
+			<img src={image} style={logoSize} alt="bank image" />
+			<p>{bankName}</p>
+			<p>{branch}</p>
+			<p>{streetNum}</p>
+		</>
+	);
+};
+
+const Navbar = () => {
+	return (
+		<ul className="nav">
+			<li className="nav-item">
+				<a className="nav-link active" aria-current="page" href="#">
+					Active
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link disabled">Disabled</a>
+			</li>
+		</ul>
+	);
+};
+
+const Section = () => {
+	return (
+		<>
+			<p className="para">{paraDesign}</p>
+			<h2 style={{ color: "green", fontSize: "40px" }}></h2>
+			<p className="para">{2 + 6}</p>
+		</>
+	);
+};
+
+// internal stylesheet
+const logoSize = {
+	backgroundColor: "green",
+	height: "50%",
+	width: "50%",
+};
+
+*/
+
+//9. In this example, we want to get rid of an error in our console, 'Warning: Each child in a list should have a unique "key" prop.'. we will start by adding an id which serves as a unique identifier, then pass a 'key' prop. we also want to see events in reacts.
+/*
+const bankDBs = [
+	{
+		id: 1,
+		image: kuda,
+		bankName: "kuda",
+		branch: "ikeja",
+		streetNum: 30,
+	},
+
+	{
+		id: 2,
+		image: barter,
+		bankName: "barter",
+		branch: "mile 12",
+		streetNum: 28,
+	},
+
+	{
+		id: 3,
+		image: carbon,
+		bankName: "carbon",
+		branch: "Abeokuta",
+		streetNum: 28,
+	},
+];
+
+const paraDesign = "Fintech";
+const BankTab = () => {
+	return (
+		//we are iterating over the array of objects (bankDBs). here we will use the spread operator. instead of having the bankDB object, 'bankDB={bankDB}', we now have {...bankDB}
+		<>
+			<Navbar />
+			<section>
+				{bankDBs.map((bankDB) => {
+					return (
+						<div>
+							<Bank key={bankDB.id} {...bankDB}></Bank>
+							<Section />
+						</div>
+					);
+				})}
+			</section>
+		</>
+	);
+};
+
+const Bank = (props) => {
+	//with the spread operator, we don't need to state prop.bankDB. we can simply just assign the destructuring to props. for this button:
+	// <button type="button" onClick={checkBranch(bankName)}>
+	// 			Bank Name
+	// </button>
+	// we want to prevent the default behaviour of the button. to do that, we add the arrow function syntax: onClick={() => checkBranch(bankName)}
+	// this helps us run the function only when it is clicked
+	//in all our event handlers, we can also have the event object(e).
+	const { image, bankName, branch, streetNum } = props;
+	const clickme = (e) => {
+		console.log(e);
+		console.log(e.target);
+		alert("yay, you clicked me");
+	};
+	const checkBranch = (bankName) => {
+		alert(bankName);
+	};
+	const hoverHere = () => {
+		console.log(branch);
+	};
+	return (
+		<>
+			<img
+				src={image}
+				style={logoSize}
+				alt="bank image"
+				onMouseOver={hoverHere}
+			/>
+			<p className="para" onClick={() => alert(branch)}>
+				{bankName}
+			</p>
+			<p>{branch}</p>
+			<p>{streetNum}</p>
+			<button type="button" onClick={clickme}>
+				Click Me
+			</button>
+			<button type="button" onClick={() => checkBranch(bankName)}>
+				Bank Name
+			</button>
+		</>
+	);
+};
+
+const Navbar = () => {
+	return (
+		<ul className="nav">
+			<li className="nav-item">
+				<a className="nav-link active" aria-current="page" href="#">
+					Active
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link disabled">Disabled</a>
+			</li>
+		</ul>
+	);
+};
+
+const Section = () => {
+	return (
+		<>
+			<p className="para">{paraDesign}</p>
+			<h2 style={{ color: "green", fontSize: "40px" }}></h2>
+			<p className="para">{2 + 6}</p>
+		</>
+	);
+};
+
+// internal stylesheet
+const logoSize = {
+	backgroundColor: "green",
+	height: "50%",
+	width: "50%",
+};
+*/
+
+//10. In this example, we want to look at import and export. we have 2 types of import and export and they are: 'named' and 'default'. what this does is that it reduces the size of our file.
+// we will create a 'bankDBs.js' to store our bank details, 'Bank.js' to store our Bank component. we will use the bankDBs to demonstrate 'named' export and import while we will use Bank.js to demonstrate 'default' export and import. with named export, we add the 'export' keyword to what we are trying to export, then import it with the exact name, 'import { bankDBs } from "./bankDBs";'. we don't need to add the js extension. we also have to transfer the image imports to the bankDBs file bcos that's where it is needed.
+// with the default export, we add the 'export default' keyword with the name of the component to the bottom of the file, then import it with any name you wish, 'import Bank from "./Bank";'. we don't need to add the js extension. when we use a different name in our import, we only need to have that same name where we are calling the component.
+// we can repeat the process for the the other component, Navbar and section.
+
+const paraDesign = "Fintech";
+const BankTab = () => {
+	return (
+		<>
+			<Navbar />
+			<section>
+				{bankDBs.map((bankDB) => {
+					return (
+						<div>
+							<Bank key={bankDB.id} {...bankDB}></Bank>
+							<Section />
+						</div>
+					);
+				})}
+			</section>
+		</>
+	);
+};
+
+const Navbar = () => {
+	return (
+		<ul className="nav">
+			<li className="nav-item">
+				<a className="nav-link active" aria-current="page" href="#">
+					Active
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link" href="#">
+					Link
+				</a>
+			</li>
+			<li className="nav-item">
+				<a className="nav-link disabled">Disabled</a>
+			</li>
+		</ul>
+	);
+};
+
+const Section = () => {
+	return (
+		<>
+			<p className="para">{paraDesign}</p>
+			<h2 style={{ color: "green", fontSize: "40px" }}></h2>
+			<p className="para">{2 + 6}</p>
+		</>
+	);
 };
 
 ReactDOM.render(<BankTab />, document.getElementById("root"));
